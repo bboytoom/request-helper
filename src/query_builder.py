@@ -97,20 +97,29 @@ class QueryBuilder:
     def show(self):
         return self.query
 
-    def execute(self):
+    def execute(self, query=None):
         try:
             with self.db.cursor() as cursor:
-                cursor.execute(self.query, tuple(self.params))
+                if query:
+                    cursor.execute(self.query)
+                else:
+                    cursor.execute(self.query, tuple(self.params))
+
                 self.db.commit()
 
                 return True
         except Exception as e:
             raise ValueError(f'Error {e}')
 
-    def all(self):
+    def all(self, query=None):
         try:
             with self.db.cursor() as cursor:
-                cursor.execute(self.query, tuple(self.params))
+
+                if query:
+                    cursor.execute(self.query)
+                else:
+                    cursor.execute(self.query, tuple(self.params))
+
                 query_all = cursor.fetchall()
 
                 if not query_all:
@@ -120,10 +129,14 @@ class QueryBuilder:
         except Exception as e:
             raise ValueError(f'Error {e}')
 
-    def all(self):
+    def one(self, query=None):
         try:
             with self.db.cursor() as cursor:
-                cursor.execute(self.query, tuple(self.params))
+                if query:
+                    cursor.execute(self.query)
+                else:
+                    cursor.execute(self.query, tuple(self.params))
+
                 query_one = cursor.fetchone()
 
                 if not query_one:
