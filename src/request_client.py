@@ -15,15 +15,15 @@ class RequestClient:
 
     def _parse_response(self, response):
         if response.status_code == 204:
-            return {}
+            return {}, 204
 
         try:
             response.raise_for_status()
-            return response.json()
+            return response.json(), response.status_code
 
         except requests.HTTPError:
-            message = f'{response.status_code} {response.reason}: {response.text}'
-            return requests.HTTPError(message, response=response)
+            message = f'{response.reason}: {response.text}'
+            return requests.HTTPError(message, response=response), response.status_code
 
         except ValueError:
             return response.text

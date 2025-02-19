@@ -111,7 +111,7 @@ class QueryBuilder:
         except Exception as e:
             raise ValueError(f'Error {e}')
 
-    def all(self, query=None):
+    def all(self, query=None, column=None):
         try:
             with self.db.cursor() as cursor:
 
@@ -125,11 +125,13 @@ class QueryBuilder:
                 if not query_all:
                     return None
 
-                return [dict(zip(self.columns, values)) for values in query_all]
+                col = self.columns if not column else column
+
+                return [dict(zip(col, values)) for values in query_all]
         except Exception as e:
             raise ValueError(f'Error {e}')
 
-    def one(self, query=None):
+    def one(self, query=None, column=None):
         try:
             with self.db.cursor() as cursor:
                 if query:
@@ -142,6 +144,8 @@ class QueryBuilder:
                 if not query_one:
                     return None
 
-                return dict(zip(self.columns, query_one))
+                col = self.columns if not column else column
+
+                return dict(zip(col, query_one))
         except Exception as e:
             raise ValueError(f'Error {e}')
