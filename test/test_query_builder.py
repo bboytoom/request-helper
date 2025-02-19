@@ -5,16 +5,18 @@ from src.query_builder import QueryBuilder
 class TestQueryBuilder(BaseTestClass):
 
     def test_query_builder_select_success(self):
+        query_1 = 'SELECT user_id, username FROM test_table WHERE status = %s ORDER BY updated_at DESC'  # noqa: E501
+        query_2 = 'SELECT user_id, username FROM test_table WHERE status = %s AND user_id IN (%s, %s) ORDER BY updated_at DESC'  # noqa: E501
+
         test_cases = [
             ({}, 'SELECT * FROM test_table', False),
             ({'columns': ['user_id', 'username', 'password']},
              'SELECT user_id, username, password FROM test_table', False),
             ({'columns': ['user_id', 'username'], 'where': {'status': True}},
              'SELECT user_id, username FROM test_table WHERE status = %s', False),
-            ({'columns': ['user_id', 'username'], 'where': {'status': True}},
-             'SELECT user_id, username FROM test_table WHERE status = %s ORDER BY updated_at DESC', True),
-            ({'columns': ['user_id', 'username'], 'where': {'status': True, 'user_id': [
-             1, 2]}}, 'SELECT user_id, username FROM test_table WHERE status = %s AND user_id IN (%s, %s) ORDER BY updated_at DESC', True)
+            ({'columns': ['user_id', 'username'], 'where': {'status': True}}, query_1, True),
+            ({'columns': ['user_id', 'username'], 'where': {'status': True, 'user_id': [1, 2]}},
+             query_2, True)
             ]
 
         for query_params, expectative, apply_order_by in test_cases:

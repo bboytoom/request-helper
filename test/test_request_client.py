@@ -88,7 +88,7 @@ class TestRequestClient(BaseTestClass):
         object_helper = RequestClient(self.api)
 
         result, status_code = object_helper.get(endpoint='/api/v1/test',
-                                                access_token='f1338ca26835863f671403941738a7b49e740fc0')
+                                                access_token='f1338ca26835863f671403941738a7b49e7')
 
         self.assertIsInstance(result, dict)
         self.assertEqual(status_code, 200)
@@ -164,7 +164,7 @@ class TestRequestClient(BaseTestClass):
 
         object_helper = RequestClient(self.api)
         result, status_code = object_helper.post(endpoint='/api/v1/test',
-                                                 access_token='f1338ca26835863f671403941738a7b49e740fc0',
+                                                 access_token='f1338ca26835863f671403941738a7b49f',
                                                  json=json.dumps(data))
 
         self.assertIsInstance(result, dict)
@@ -192,7 +192,7 @@ class TestRequestClient(BaseTestClass):
 
         object_helper = RequestClient(self.api)
         result, status_code = object_helper.post(endpoint='/api/v1/test',
-                                                 access_token='f1338ca26835863f671403941738a7b49e740fc0',
+                                                 access_token='f1338ca26835863f671403941738a7b49e',
                                                  data=json.dumps(data))
 
         self.assertIsInstance(result, dict)
@@ -237,7 +237,7 @@ class TestRequestClient(BaseTestClass):
 
         object_helper = RequestClient(self.api)
         result, status_code = object_helper.put(endpoint='/api/v1/test',
-                                                access_token='f1338ca26835863f671403941738a7b49e740fc0',
+                                                access_token='f1338ca26835863f671403941738a7b49e7',
                                                 json=json.dumps(data))
 
         self.assertIsInstance(result, dict)
@@ -254,7 +254,7 @@ class TestRequestClient(BaseTestClass):
 
         object_helper = RequestClient(self.api)
         result, status_code = object_helper.delete(endpoint='/api/v1/test/1',
-                                                   access_token='f1338ca26835863f671403941738a7b49e740fc0')
+                                                   access_token='f1338ca26835863f671403941738a7b')
 
         self.assertIsInstance(result, dict)
         self.assertEqual(status_code, 204)

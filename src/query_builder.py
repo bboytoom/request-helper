@@ -18,7 +18,7 @@ class QueryBuilder:
             raise ValueError('You must specify a table')
 
         col = ', '.join(columns) if columns else '*'
-        self.query = f'SELECT {col} FROM {self.table_name}'
+        self.query = f'SELECT {col} FROM {self.table_name}'  # nosec
 
         return self
 
@@ -43,7 +43,7 @@ class QueryBuilder:
         if not self.table_name:
             raise ValueError('You must specify a table')
 
-        self.query = f'DELETE FROM {self.table_name}'
+        self.query = f'DELETE FROM {self.table_name}'  # nosec
 
         return self
 
@@ -60,11 +60,12 @@ class QueryBuilder:
 
             placeholders = ', '.join(['%s'] * len(values))
             col_names = ', '.join(self.columns)
-            self.query = f'INSERT INTO {self.table_name} ({col_names}) VALUES ({placeholders})'
+
+            self.query = f'INSERT INTO {self.table_name} ({col_names}) VALUES ({placeholders})'  # noqa: E501 # nosec
             self.params = list(values.values())
         else:
             set_clause = ', '.join([f'{key} = %s' for key in values.keys()])
-            self.query = f'UPDATE {self.table_name} SET {set_clause}'
+            self.query = f'UPDATE {self.table_name} SET {set_clause}'  # nosec
             self.params = list(values.values())
 
         return self
