@@ -26,9 +26,10 @@ class TestRequestClient(BaseTestClass):
 
         object_helper = RequestClient(self.api)
 
-        result = object_helper.get()
+        result, status_code = object_helper.get()
 
         self.assertIsInstance(result, dict)
+        self.assertEqual(status_code, 200)
         self.assertEqual(result, expected_response)
 
     @httpretty.activate
@@ -40,11 +41,11 @@ class TestRequestClient(BaseTestClass):
                                status=401)
 
         object_helper = RequestClient(self.api)
-        result = object_helper.get()
+        result, status_code = object_helper.get()
 
         self.assertIsInstance(result, HTTPError)
-        self.assertEqual(
-            str(result), '401 Unauthorized: {"message": "Unauthorized"}')
+        self.assertEqual(status_code, 401)
+        self.assertEqual(str(result), 'Unauthorized: {"message": "Unauthorized"}')
 
     @patch('src.request_client.requests')
     def test_request_get_with_auth_basic_success(self,
@@ -64,9 +65,10 @@ class TestRequestClient(BaseTestClass):
                                       username='test1',
                                       password='Test12345678')
 
-        result = object_helper.get()
+        result, status_code = object_helper.get()
 
         self.assertIsInstance(result, dict)
+        self.assertEqual(status_code, 200)
         self.assertEqual(result, expected_response)
 
     @patch('src.request_client.requests')
@@ -85,10 +87,11 @@ class TestRequestClient(BaseTestClass):
 
         object_helper = RequestClient(self.api)
 
-        result = object_helper.get(endpoint='/api/v1/test',
-                                   access_token='f1338ca26835863f671403941738a7b49e740fc0')
+        result, status_code = object_helper.get(endpoint='/api/v1/test',
+                                                access_token='f1338ca26835863f671403941738a7b49e7')
 
         self.assertIsInstance(result, dict)
+        self.assertEqual(status_code, 200)
         self.assertEqual(result, expected_response)
 
     @patch('src.request_client.requests')
@@ -110,9 +113,10 @@ class TestRequestClient(BaseTestClass):
                                       username='test1',
                                       password='Test12345678')
 
-        result = object_helper.get(endpoint='/api/v1/test')
+        result, status_code = object_helper.get(endpoint='/api/v1/test')
 
         self.assertIsInstance(result, dict)
+        self.assertEqual(status_code, 200)
         self.assertEqual(result, expected_response)
 
     @patch('src.request_client.requests')
@@ -134,9 +138,10 @@ class TestRequestClient(BaseTestClass):
                                       username='test1',
                                       password='Test12345678')
 
-        result = object_helper.get(endpoint='/api/v1/test?name=test&last=test')
+        result, status_code = object_helper.get(endpoint='/api/v1/test?name=test&last=test')
 
         self.assertIsInstance(result, dict)
+        self.assertEqual(status_code, 200)
         self.assertEqual(result, expected_response)
 
     @patch('src.request_client.requests')
@@ -158,11 +163,40 @@ class TestRequestClient(BaseTestClass):
         requests.request.return_value = mock_response
 
         object_helper = RequestClient(self.api)
-        result = object_helper.post(endpoint='/api/v1/test',
-                                    access_token='f1338ca26835863f671403941738a7b49e740fc0',
-                                    json=json.dumps(data))
+        result, status_code = object_helper.post(endpoint='/api/v1/test',
+                                                 access_token='f1338ca26835863f671403941738a7b49f',
+                                                 json=json.dumps(data))
 
         self.assertIsInstance(result, dict)
+        self.assertEqual(status_code, 201)
+        self.assertEqual(result, expected_response)
+
+    @patch('src.request_client.requests')
+    def test_request_post_form_urlencode_success(self,
+                                                 requests):
+        mock_response = MagicMock()
+
+        expected_response = {
+            'message': 'added'
+            }
+
+        data = {
+            'user': 'test',
+            'scope': 'offline'
+            }
+
+        mock_response.status_code = 201
+        mock_response.json.return_value = expected_response
+
+        requests.request.return_value = mock_response
+
+        object_helper = RequestClient(self.api)
+        result, status_code = object_helper.post(endpoint='/api/v1/test',
+                                                 access_token='f1338ca26835863f671403941738a7b49e',
+                                                 data=json.dumps(data))
+
+        self.assertIsInstance(result, dict)
+        self.assertEqual(status_code, 201)
         self.assertEqual(result, expected_response)
 
     @httpretty.activate
@@ -177,11 +211,11 @@ class TestRequestClient(BaseTestClass):
                                       username='test1',
                                       password='Test12345678')
 
-        result = object_helper.post(endpoint='')
+        result, status_code = object_helper.post(endpoint='')
 
         self.assertIsInstance(result, HTTPError)
-        self.assertEqual(str(result),
-                         '404 Not Found: {"message": "Not Found"}')
+        self.assertEqual(status_code, 404)
+        self.assertEqual(str(result), 'Not Found: {"message": "Not Found"}')
 
     @patch('src.request_client.requests')
     def test_request_put_success(self,
@@ -202,11 +236,12 @@ class TestRequestClient(BaseTestClass):
         requests.request.return_value = mock_response
 
         object_helper = RequestClient(self.api)
-        result = object_helper.put(endpoint='/api/v1/test',
-                                   access_token='f1338ca26835863f671403941738a7b49e740fc0',
-                                   json=json.dumps(data))
+        result, status_code = object_helper.put(endpoint='/api/v1/test',
+                                                access_token='f1338ca26835863f671403941738a7b49e7',
+                                                json=json.dumps(data))
 
         self.assertIsInstance(result, dict)
+        self.assertEqual(status_code, 200)
         self.assertEqual(result, expected_response)
 
     @patch('src.request_client.requests')
@@ -218,8 +253,9 @@ class TestRequestClient(BaseTestClass):
         requests.request.return_value = mock_response
 
         object_helper = RequestClient(self.api)
-        result = object_helper.delete(endpoint='/api/v1/test/1',
-                                      access_token='f1338ca26835863f671403941738a7b49e740fc0')
+        result, status_code = object_helper.delete(endpoint='/api/v1/test/1',
+                                                   access_token='f1338ca26835863f671403941738a7b')
 
         self.assertIsInstance(result, dict)
+        self.assertEqual(status_code, 204)
         self.assertEqual(result, {})
